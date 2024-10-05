@@ -142,8 +142,8 @@ searchTags();
 function searchTags() {
 const searchInput = document.getElementById('search-input').value;
 const searchTerms = searchInput.split('\n')
-.filter(term => term.trim() !== '')
-.map(term => term.trim().replace(/\s+/g, '_'));
+.filter(term => term.trim().length > 2)
+.map(term => term.trim().toLowerCase().replace(/\s+/g, '_'));
 const resultsDiv = document.getElementById('results');
 
 if (searchTerms.length === 0) {
@@ -157,7 +157,7 @@ const matches = new Map();
 
 searchTerms.forEach(term => {
 tags.forEach(tag => {
-const normalizedTag = tag.n.replace(/\s+/g, '_');
+const normalizedTag = tag.n.toLowerCase().replace(/\s+/g, '_');
 if (normalizedTag === term) {
 matches.set(tag.n, { ...tag, exact: true });
 } else if (normalizedTag.includes(term) && !matches.has(tag.n)) {
@@ -219,6 +219,9 @@ selectedRows.add(row.dataset.index);
 document.getElementById('copy-button').addEventListener('click', copySelectedTags);
 document.addEventListener('keydown', function(e) {
 if (e.ctrlKey && e.key === 'c') {
+if (window.getSelection().toString()) {
+return;
+}
 copySelectedTags();
 e.preventDefault();
 }
